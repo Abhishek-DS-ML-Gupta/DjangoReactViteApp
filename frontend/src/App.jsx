@@ -1,34 +1,20 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./auth/ProtectedRoute";
+import Landing from "./pages/Landing";
 
-function App() {
+export default function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
-        <nav className="mb-6 flex space-x-4">
-          <Link
-            to="/signup"
-            className="text-blue-500 hover:text-blue-700 font-semibold"
-          >
-            Signup
-          </Link>
-          <Link
-            to="/login"
-            className="text-blue-500 hover:text-blue-700 font-semibold"
-          >
-            Login
-          </Link>
-        </nav>
-
-        <Routes>
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="*" element={<Login />} /> {/* Default route */}
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="*" element={<Login />} />
+      </Routes>
     </Router>
   );
 }
-
-export default App;

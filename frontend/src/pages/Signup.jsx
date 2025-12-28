@@ -1,51 +1,61 @@
 import { useState } from "react";
-import axios from "../api/axios";
+import api from "../api/axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Signup() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
+  const navigate = useNavigate();
 
   const signup = async () => {
     try {
-      await axios.post("auth/signup/", { username, email, password });
-      setMsg("Signup successful! You can now login.");
+      localStorage.removeItem("token");
+      const res = await api.post("auth/signup/", { username, email, password });
+      setMsg(res.data.message);
+      navigate("/login");
     } catch (err) {
-      setMsg("Signup failed: " + err.response.data.username || err.message);
+      setMsg(err.response?.data?.detail || err.message);
     }
   };
 
   return (
-    <div className="h-screen flex justify-center items-center bg-gray-100">
-      <div className="bg-white p-6 rounded shadow w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-4">Signup</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#DFEGES] to-[#EBEFF0] p-4">
+      <div className="w-full max-w-md p-8 rounded-2xl
+                      bg-gradient-to-br from-[#FCFCFC] to-[#EBECED]
+                      border border-white/70
+                      shadow-[0_40px_40px_rgba(0,0,0,0.1),0_40px_40px_rgba(0,0,0,0.1),
+                              0_-24px_48px_rgba(255,255,255,0.8),
+                              10px_1px_4px_rgba(0,0,0,0.25)]
+                      flex flex-col space-y-4">
+        <h1 className="text-3xl font-bold text-gray-800 text-center">Signup</h1>
         <input
           placeholder="Username"
-          className="border p-2 w-full mb-2 rounded"
+          className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
         <input
           placeholder="Email"
-          className="border p-2 w-full mb-2 rounded"
+          className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
         <input
-          placeholder="Password"
           type="password"
-          className="border p-2 w-full mb-4 rounded"
+          placeholder="Password"
+          className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
           onClick={signup}
-          className="bg-blue-500 text-white px-4 py-2 rounded w-full hover:bg-blue-600"
+          className="bg-[#000000] text-white py-2 rounded-lg transition"
         >
           Signup
         </button>
-        <p className="mt-4 text-gray-700">{msg}</p>
+        {msg && <p className="text-red-500 text-center">{msg}</p>}
       </div>
     </div>
   );
